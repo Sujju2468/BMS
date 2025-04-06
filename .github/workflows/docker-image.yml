@@ -1,0 +1,29 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+      - name: Set image tag
+        run: echo "IMAGE_TAG=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Stop and remove existing container (if any)
+        run: |
+             docker stop $(docker ps -q)
+
+      - name: Remove old Docker image (if any)
+        run: |
+             docker images --filter=reference='bmsapp:*' -q | xargs docker rmi -f
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag bmsapp:${{ env.IMAGE_TAG }}
+
+      - name: Deploy docker image
+        run: docker run -itd -p 3000:3000 --name bmsapp bmsapp:${{ env.IMAGE_TAG}}
