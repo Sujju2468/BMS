@@ -16,7 +16,7 @@ jobs:
 
       - name: Stop and remove existing container (if any)
         run: |
-             docker stop $(docker ps -q)
+             docker stop $(docker ps -q) || echo "No containers to stop"
 
       - name: Remove old Docker image (if any)
         run: |
