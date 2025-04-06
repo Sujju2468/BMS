@@ -20,7 +20,7 @@ jobs:
 
       - name: Remove old Docker image (if any)
         run: |
-             docker images --filter=reference='bmsapp:*' -q | xargs docker rmi -f
+             docker images --filter=reference='bmsapp:*' -q | xargs -r docker rmi -f
 
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag bmsapp:${{ env.IMAGE_TAG }}
